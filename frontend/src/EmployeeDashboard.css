@@ -1,0 +1,84 @@
+.dashboard-container {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  color: #333;
+}
+
+/* NAVBAR */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #ccc;
+  padding: 10px 20px;
+  border-radius: 6px;
+  background-color: #fcfcfc;
+}
+
+.nav-left { display: flex; align-items: center; gap: 20px; }
+.logo-placeholder { border: 1px solid #000; padding: 6px 12px; font-weight: bold; font-size: 13px; }
+.nav-links { display: flex; gap: 15px; }
+.nav-btn { background: none; border: none; font-size: 14px; cursor: pointer; padding: 5px 8px; }
+.nav-btn.active { text-decoration: underline; font-weight: bold; }
+
+.nav-right { display: flex; align-items: center; gap: 12px; }
+.role-toggle-btn { padding: 4px 8px; font-size: 11px; border-radius: 4px; border: 1px solid #777; cursor: pointer; background: #eee; }
+.header-status-dot { width: 12px; height: 12px; border-radius: 50%; }
+.header-status-dot.red { background-color: #ff4d4d; }
+.header-status-dot.green { background-color: #2ecc71; }
+
+.avatar-wrapper { position: relative; }
+.user-avatar { width: 36px; height: 36px; border-radius: 50%; cursor: pointer; border: 1px solid #aaa; }
+.dropdown-menu { position: absolute; right: 0; top: 45px; background: #fff; border: 1px solid #ccc; box-shadow: 0 4px 10px rgba(0,0,0,0.15); border-radius: 4px; display: flex; flex-direction: column; width: 130px; z-index: 10; }
+.dropdown-menu button { padding: 10px; border: none; background: none; text-align: left; cursor: pointer; font-size: 13px; border-bottom: 1px solid #eee; }
+.dropdown-menu button:hover { background-color: #f0f0f0; }
+
+/* TOOLBAR & CARDS */
+.toolbar { display: flex; justify-content: space-between; margin: 20px 0; }
+.badge-new { background-color: #9b59b6; color: #fff; border: none; padding: 6px 16px; border-radius: 4px; font-weight: bold; }
+.search-input { padding: 6px 12px; border: 1px solid #ccc; border-radius: 4px; width: 200px; }
+
+.cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.employee-card { position: relative; border: 1px solid #333; border-radius: 8px; padding: 25px; display: flex; flex-direction: column; align-items: center; cursor: pointer; background-color: #fff; }
+.employee-card:hover { background-color: #f9f9f9; }
+.card-status-indicator { position: absolute; top: 10px; right: 10px; }
+.status-dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; }
+.status-dot.green { background-color: #2ecc71; }
+.status-dot.yellow { background-color: #f1c40f; }
+.status-icon.airplane { font-size: 12px; }
+.card-avatar { width: 65px; height: 65px; border-radius: 50%; margin-bottom: 10px; }
+.card-name { margin: 0; font-size: 14px; font-weight: bold; }
+
+/* PROFILE DETAILED FORM VIEW */
+.profile-view-container { border: 1px solid #ccc; padding: 20px; border-radius: 8px; background: #fff; margin-top: 20px; }
+.back-btn { background: none; border: none; color: #0066cc; cursor: pointer; font-size: 14px; margin-bottom: 15px; }
+.profile-card-header { display: flex; gap: 20px; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 20px; }
+.profile-avatar-large img { width: 90px; height: 90px; border-radius: 50%; }
+.profile-meta h2 { margin: 0 0 10px 0; }
+.meta-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 30px; font-size: 13px; }
+.meta-grid p { margin: 0; }
+
+.sub-tabs { display: flex; gap: 10px; margin: 20px 0 10px 0; border-bottom: 1px solid #ccc; }
+.sub-tab-btn { padding: 8px 16px; border: none; background: none; cursor: pointer; font-weight: bold; color: #666; }
+.sub-tab-btn.active { border-bottom: 2px solid #000; color: #000; }
+
+.sub-tab-content { padding: 10px 0; }
+.grid-2-col { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+.skill-badge { display: inline-block; background: #eee; padding: 4px 8px; border-radius: 4px; margin-right: 6px; font-size: 12px; }
+.add-btn { background: none; border: 1px dashed #777; padding: 4px 8px; font-size: 12px; cursor: pointer; margin-top: 5px; display: block; }
+
+/* SALARY TABLE */
+.salary-summary-box { display: flex; gap: 30px; background: #f8f9fa; padding: 15px; border-radius: 6px; margin-bottom: 20px; }
+.salary-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
+.salary-table th, .salary-table td { border: 1px solid #ddd; padding: 8px 12px; text-align: left; }
+.salary-table th { background-color: #f2f2f2; }
+.deductions-grid { display: flex; gap: 40px; margin-top: 10px; font-size: 13px; }
+
+/* TAB PANELS & FOOTER */
+.tab-panel { border: 1px dashed #ccc; padding: 40px; text-align: center; border-radius: 8px; margin-top: 20px; }
+.btn-check-in, .btn-check-out, .btn-secondary { padding: 8px 16px; border: 1px solid #333; background: #fff; cursor: pointer; border-radius: 4px; font-weight: bold; }
+.dashboard-footer { margin-top: 30px; }
+.settings-link { background: none; border: none; color: #555; cursor: pointer; text-decoration: underline; }

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import dayflowLogo from "./assets/dayflow-logo.png";
+import EmployeeDashboard from "./EmployeeDashboard";
 
 const departments = [
   "Human Resources",
@@ -1521,42 +1522,7 @@ function App() {
         ====================================== */}
 
         {screen === "employee-dashboard" && (
-          <section className="page-content">
-
-            <div className="success-container">
-
-              <div className="success-icon">
-                ✓
-              </div>
-
-              <span className="eyebrow">
-                EMPLOYEE DASHBOARD
-              </span>
-
-              <h1>
-                You're
-                <br />
-                <span>signed in.</span>
-              </h1>
-
-              <p>
-                Employee dashboard will be
-                built next.
-              </p>
-
-              <button
-                className="create-button"
-                onClick={() =>
-                  setScreen("role")
-                }
-              >
-                Sign Out
-                <span>→</span>
-              </button>
-
-            </div>
-
-          </section>
+          <EmployeeDashboard onLogout={() => setScreen("role")} />
         )}
 
         {/* ======================================
