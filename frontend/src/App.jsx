@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import dayflowLogo from "./assets/dayflow-logo.png";
+import { testBackend } from "./api";
 
 const departments = [
   "Human Resources",
@@ -67,15 +68,16 @@ function App() {
 
   const [sparkles, setSparkles] = useState([]);
 
-  // Mock employee database
+  // Employee data
   const [employees, setEmployees] = useState([]);
 
-  // Mock HR database
+  // HR data
   const [hrUsers, setHrUsers] = useState([]);
 
   const [createdEmployee, setCreatedEmployee] =
     useState(null);
 
+  // Employee creation form
   const [employeeForm, setEmployeeForm] = useState({
     companyName: "",
     firstName: "",
@@ -86,18 +88,22 @@ function App() {
     department: "",
   });
 
+  // Employee login
   const [employeeLogin, setEmployeeLogin] = useState({
     loginId: "",
     password: "",
   });
 
+  // HR mode
   const [hrMode, setHrMode] = useState("signin");
 
+  // HR login
   const [hrLogin, setHrLogin] = useState({
     loginId: "",
     password: "",
   });
 
+  // HR signup
   const [hrSignup, setHrSignup] = useState({
     firstName: "",
     lastName: "",
@@ -110,9 +116,30 @@ function App() {
     confirmPassword: "",
   });
 
-  // -----------------------------
+  // =====================================
+  // BACKEND CONNECTION TEST
+  // =====================================
+
+  const handleBackendTest = async () => {
+    try {
+      const data = await testBackend();
+
+      console.log("Backend response:", data);
+
+      alert(data.message);
+    } catch (error) {
+      console.error(
+        "Backend connection error:",
+        error
+      );
+
+      alert("Backend connection failed!");
+    }
+  };
+
+  // =====================================
   // CUSTOM MOUSE
-  // -----------------------------
+  // =====================================
 
   useEffect(() => {
     const moveMouse = (event) => {
@@ -122,7 +149,10 @@ function App() {
       });
     };
 
-    window.addEventListener("mousemove", moveMouse);
+    window.addEventListener(
+      "mousemove",
+      moveMouse
+    );
 
     return () =>
       window.removeEventListener(
@@ -131,9 +161,9 @@ function App() {
       );
   }, []);
 
-  // -----------------------------
+  // =====================================
   // CLICK SPARKLES
-  // -----------------------------
+  // =====================================
 
   useEffect(() => {
     const createSparkles = (event) => {
@@ -143,7 +173,8 @@ function App() {
           id: `${Date.now()}-${index}`,
           x: event.clientX,
           y: event.clientY,
-          angle: (Math.PI * 2 * index) / 8,
+          angle:
+            (Math.PI * 2 * index) / 8,
         })
       );
 
@@ -157,7 +188,8 @@ function App() {
           old.filter(
             (sparkle) =>
               !newSparkles.some(
-                (item) => item.id === sparkle.id
+                (item) =>
+                  item.id === sparkle.id
               )
           )
         );
@@ -176,9 +208,9 @@ function App() {
       );
   }, []);
 
-  // -----------------------------
+  // =====================================
   // EMPLOYEE FORM
-  // -----------------------------
+  // =====================================
 
   const handleEmployeeChange = (event) => {
     const { name, value } = event.target;
@@ -196,77 +228,132 @@ function App() {
     employeeForm.serialNumber
   );
 
-  const handleCreateEmployee = (event) => {
-    event.preventDefault();
+  // =====================================
+  // YOUR EXISTING CODE CONTINUES HERE
+  // =====================================
 
-    if (
-      !employeeForm.companyName ||
-      !employeeForm.firstName ||
-      !employeeForm.lastName ||
-      !employeeForm.dob ||
-      !employeeForm.yearOfJoining ||
-      !employeeForm.department
-    ) {
+  const handleCreateEmployee = async (event) => {
+  event.preventDefault();
+
+  if (
+    !employeeForm.companyName ||
+    !employeeForm.firstName ||
+    !employeeForm.lastName ||
+    !employeeForm.dob ||
+    !employeeForm.yearOfJoining ||
+    !employeeForm.department
+  ) {
+    alert("Please complete all employee details.");
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      "http://localhost:5000/api/employees",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          companyName: employeeForm.companyName,
+          firstName: employeeForm.firstName,
+          lastName: employeeForm.lastName,
+          dob: employeeForm.dob,
+          yearOfJoining: employeeForm.yearOfJoining,
+          department: employeeForm.department,
+        }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
       alert(
-        "Please complete all employee details."
+        data.message ||
+          "Failed to create employee."
       );
-
       return;
     }
 
-    const temporaryPassword =
-      generateTemporaryPassword();
+    const employee = data.employee;
 
-    const newEmployee = {
-      ...employeeForm,
-      loginId,
-      temporaryPassword,
+    setCreatedEmployee({
+      ...employee,
       mustChangePassword: true,
-    };
-
-    setEmployees((previous) => [
-      ...previous,
-      newEmployee,
-    ]);
-
-    setCreatedEmployee(newEmployee);
+    });
 
     setScreen("employee-created");
-  };
+
+  } catch (error) {
+    console.error(
+      "Create employee error:",
+      error
+    );
+
+    alert(
+      "Could not connect to the Dayflow backend."
+    );
+  }
+};
 
   // -----------------------------
   // EMPLOYEE SIGN IN
   // -----------------------------
 
-  const handleEmployeeLogin = (event) => {
-    event.preventDefault();
+  const handleEmployeeLogin = async (event) => {
+  event.preventDefault();
 
-    const employee = employees.find(
-      (item) =>
-        item.loginId.toLowerCase() ===
-          employeeLogin.loginId
-            .trim()
-            .toLowerCase() &&
-        item.temporaryPassword ===
-          employeeLogin.password
+  if (
+    !employeeLogin.loginId ||
+    !employeeLogin.password
+  ) {
+    alert("Please enter your Login ID and Password.");
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      "http://localhost:5000/api/auth/employee-login",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          loginId: employeeLogin.loginId.trim(),
+          password: employeeLogin.password,
+        }),
+      }
     );
 
-    if (!employee) {
-      alert(
-        "Invalid Login ID or Password."
-      );
+    const data = await response.json();
 
+    if (!response.ok) {
+      alert(
+        data.message ||
+          "Invalid Login ID or Password."
+      );
       return;
     }
 
+    console.log("Employee login:", data);
+
     alert(
-      `Welcome ${employee.firstName}!`
+      `Welcome ${data.user.firstName}!`
     );
 
-    // For now this goes to a placeholder.
-    // Later we'll create the complete dashboard.
     setScreen("employee-dashboard");
-  };
+
+  } catch (error) {
+    console.error(
+      "Employee login error:",
+      error
+    );
+
+    alert("Unable to connect to Dayflow backend.");
+  }
+};
 
   // -----------------------------
   // HR SIGN IN
@@ -467,24 +554,26 @@ function App() {
         ====================================== */}
 
         {screen === "role" && (
-          <section className="page-content">
+  <section className="page-content">
 
-            <div className="intro">
-              <span className="eyebrow">
-                WELCOME TO DAYFLOW
-              </span>
+    <div className="intro">
 
-              <h1>
-                Your workday,
-                <br />
-                <span>in flow.</span>
-              </h1>
+      <span className="eyebrow">
+        WELCOME TO DAYFLOW
+      </span>
 
-              <p>
-                Choose how you would like to
-                enter your Dayflow workspace.
-              </p>
-            </div>
+      <h1>
+        Your workday,
+        <br />
+        <span>in flow.</span>
+      </h1>
+
+      <p>
+        Choose how you would like to
+        enter your Dayflow workspace.
+      </p>
+
+    </div>
 
             <div className="role-grid">
 
