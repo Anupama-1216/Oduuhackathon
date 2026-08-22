@@ -254,16 +254,113 @@ export default function EmployeeDashboard({ onLogout }) {
           )}
 
           {activeTab === "Attendance" && (
-            <div className="tab-panel">
-              <h2>Attendance Module</h2>
-              <p>Status: <strong>{isCheckedIn ? "Checked In (Green)" : "Checked Out (Red)"}</strong></p>
-              {!isCheckedIn ? (
-                <button className="btn-check-in" onClick={() => setIsCheckedIn(true)}>Check IN -{">"}</button>
-              ) : (
-                <button className="btn-check-out" onClick={() => setIsCheckedIn(false)}>Check Out -{">"}</button>
-              )}
-            </div>
-          )}
+  <div className="attendance-view">
+    {isAdmin ? (
+      /* ADMIN / HR OFFICER VIEW */
+      <>
+        <h3>Attendances List View (Admin/HR Officer)</h3>
+        <div className="attendance-controls">
+          <input
+            type="text"
+            placeholder="Searchbar"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="search-input"
+          />
+          <div className="date-nav">
+            <button className="nav-arrow">{"<-"}</button>
+            <button className="nav-arrow">{"->"}</button>
+            <input type="date" defaultValue="2025-10-22" className="date-picker-btn" />
+            <span className="day-badge">Day</span>
+          </div>
+        </div>
+
+        <table className="attendance-table">
+          <thead>
+            <tr>
+              <th>Emp</th>
+              <th>Check In</th>
+              <th>Check Out</th>
+              <th>Work Hours</th>
+              <th>Extra Hours</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>[Employee] Alex Morgan</td>
+              <td>10:00</td>
+              <td>19:00</td>
+              <td>09:00</td>
+              <td>01:00</td>
+            </tr>
+            <tr>
+              <td>[Employee] Sophia Chen</td>
+              <td>10:00</td>
+              <td>19:00</td>
+              <td>09:00</td>
+              <td>01:00</td>
+            </tr>
+          </tbody>
+        </table>
+      </>
+    ) : (
+      /* EMPLOYEE VIEW */
+      <>
+        <h3>Attendance (Employee View)</h3>
+        <div className="employee-stats-bar">
+          <div className="nav-arrows">
+            <button className="nav-arrow">{"<-"}</button>
+            <button className="nav-arrow">{"->"}</button>
+          </div>
+          <div className="stat-card">
+            <span className="stat-label">Month</span>
+            <span className="stat-value">Oct</span>
+          </div>
+          <div className="stat-card">
+            <span className="stat-label">Count of days present</span>
+            <span className="stat-value">22</span>
+          </div>
+          <div className="stat-card">
+            <span className="stat-label">Leaves count</span>
+            <span className="stat-value">2</span>
+          </div>
+          <div className="stat-card">
+            <span className="stat-label">Total working days</span>
+            <span className="stat-value">24</span>
+          </div>
+        </div>
+
+        <table className="attendance-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Check In</th>
+              <th>Check Out</th>
+              <th>Work Hours</th>
+              <th>Extra Hours</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>21/10/2025</td>
+              <td>10:00</td>
+              <td>19:00</td>
+              <td>09:00</td>
+              <td>01:00</td>
+            </tr>
+            <tr>
+              <td>22/10/2025</td>
+              <td>10:05</td>
+              <td>19:00</td>
+              <td>08:55</td>
+              <td>00:00</td>
+            </tr>
+          </tbody>
+        </table>
+      </>
+    )}
+  </div>
+)}
 
           {activeTab === "Time Off" && (
             <div className="tab-panel">
