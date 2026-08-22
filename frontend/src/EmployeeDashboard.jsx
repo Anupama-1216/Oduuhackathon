@@ -20,6 +20,11 @@ export default function EmployeeDashboard({ onLogout }) {
 
   // Toggle for testing Admin vs Employee access permissions
   const [isAdmin, setIsAdmin] = useState(true);
+  const [showTimeOffModal, setShowTimeOffModal] = useState(false);
+  const [leaveRequests, setLeaveRequests] = useState([
+    { id: 1, empName: "Alex Morgan", startDate: "28/10/2025", endDate: "28/10/2025", type: "Paid Time Off", status: "Pending" },
+    { id: 2, empName: "Sophia Chen", startDate: "01/11/2025", endDate: "03/11/2025", type: "Sick Leave", status: "Pending" }
+  ]);
 
   // Dynamic Salary Calculations based on Wage = 50,000 / month
   const monthlyWage = 50000;
@@ -57,15 +62,12 @@ export default function EmployeeDashboard({ onLogout }) {
         </div>
 
         <div className="nav-right">
-          {/* Admin Role Toggle Switch for Testing */}
           <button className="role-toggle-btn" onClick={() => setIsAdmin(!isAdmin)}>
             Role: {isAdmin ? "Admin" : "Employee"}
           </button>
 
-          {/* Attendance Status Dot */}
           <div className={`header-status-dot ${isCheckedIn ? "green" : "red"}`}></div>
 
-          {/* User Profile Avatar Dropdown */}
           <div className="avatar-wrapper">
             <img
               src={employees[0].avatar}
@@ -87,7 +89,7 @@ export default function EmployeeDashboard({ onLogout }) {
         </div>
       </header>
 
-      {/* 2. PROFILE VIEW (FULL PAGE FORM VIEW FROM IMAGE 2 & 3) */}
+      {/* 2. PROFILE VIEW OR MAIN TABS */}
       {selectedProfile ? (
         <div className="profile-view-container">
           <button className="back-btn" onClick={() => setSelectedProfile(null)}>← Back to List</button>
@@ -110,10 +112,8 @@ export default function EmployeeDashboard({ onLogout }) {
             </div>
           </div>
 
-          {/* SUB TABS NAVIGATION */}
           <div className="sub-tabs">
             {["Resume", "Private Info", "Salary Info", "Security"].map((subTab) => {
-              // Hide "Salary Info" if logged in as normal employee
               if (subTab === "Salary Info" && !isAdmin) return null;
               return (
                 <button
@@ -127,7 +127,6 @@ export default function EmployeeDashboard({ onLogout }) {
             })}
           </div>
 
-          {/* SUB TAB 1: RESUME */}
           {profileSubTab === "Resume" && (
             <div className="sub-tab-content grid-2-col">
               <div>
@@ -151,7 +150,6 @@ export default function EmployeeDashboard({ onLogout }) {
             </div>
           )}
 
-          {/* SUB TAB 2: PRIVATE INFO */}
           {profileSubTab === "Private Info" && (
             <div className="sub-tab-content grid-2-col">
               <div>
@@ -175,7 +173,6 @@ export default function EmployeeDashboard({ onLogout }) {
             </div>
           )}
 
-          {/* SUB TAB 3: SALARY INFO (ADMIN ONLY VIEW FROM IMAGE 2) */}
           {profileSubTab === "Salary Info" && isAdmin && (
             <div className="sub-tab-content">
               <div className="salary-summary-box">
@@ -214,7 +211,6 @@ export default function EmployeeDashboard({ onLogout }) {
             </div>
           )}
 
-          {/* SUB TAB 4: SECURITY */}
           {profileSubTab === "Security" && (
             <div className="sub-tab-content">
               <h3>Security & Credentials</h3>
@@ -224,148 +220,277 @@ export default function EmployeeDashboard({ onLogout }) {
           )}
         </div>
       ) : (
-        /* 3. MAIN EMPLOYEES GRID VIEW (IMAGE 1) */
         <>
-          <div className="toolbar">
-            <button className="badge-new">NEW</button>
-            <input
-              type="text"
-              placeholder="Search..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="search-input"
-            />
-          </div>
-
           {activeTab === "Employees" && (
-            <div className="cards-grid">
-              {filteredEmployees.map((emp) => (
-                <div key={emp.id} className="employee-card" onClick={() => setSelectedProfile(emp)}>
-                  <div className="card-status-indicator">
-                    {emp.status === "present" && <span className="status-dot green"></span>}
-                    {emp.status === "leave" && <span className="status-icon airplane">✈</span>}
-                    {emp.status === "absent" && <span className="status-dot yellow"></span>}
+            <>
+              <div className="toolbar">
+                <button className="badge-new">NEW</button>
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="search-input"
+                />
+              </div>
+              <div className="cards-grid">
+                {filteredEmployees.map((emp) => (
+                  <div key={emp.id} className="employee-card" onClick={() => setSelectedProfile(emp)}>
+                    <div className="card-status-indicator">
+                      {emp.status === "present" && <span className="status-dot green"></span>}
+                      {emp.status === "leave" && <span className="status-icon airplane">✈</span>}
+                      {emp.status === "absent" && <span className="status-dot yellow"></span>}
+                    </div>
+                    <img src={emp.avatar} alt={emp.name} className="card-avatar" />
+                    <p className="card-name">{emp.name}</p>
                   </div>
-                  <img src={emp.avatar} alt={emp.name} className="card-avatar" />
-                  <p className="card-name">{emp.name}</p>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            </>
           )}
 
           {activeTab === "Attendance" && (
-  <div className="attendance-view">
-    {isAdmin ? (
-      /* ADMIN / HR OFFICER VIEW */
-      <>
-        <h3>Attendances List View (Admin/HR Officer)</h3>
-        <div className="attendance-controls">
-          <input
-            type="text"
-            placeholder="Searchbar"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="search-input"
-          />
-          <div className="date-nav">
-            <button className="nav-arrow">{"<-"}</button>
-            <button className="nav-arrow">{"->"}</button>
-            <input type="date" defaultValue="2025-10-22" className="date-picker-btn" />
-            <span className="day-badge">Day</span>
-          </div>
-        </div>
+            <div className="attendance-view">
+              {isAdmin ? (
+                <>
+                  <h3>Attendances List View (Admin/HR Officer)</h3>
+                  <div className="attendance-controls">
+                    <input
+                      type="text"
+                      placeholder="Searchbar"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="search-input"
+                    />
+                    <div className="date-nav">
+                      <button className="nav-arrow">{"<-"}</button>
+                      <button className="nav-arrow">{"->"}</button>
+                      <input type="date" defaultValue="2025-10-22" className="date-picker-btn" />
+                      <span className="day-badge">Day</span>
+                    </div>
+                  </div>
 
-        <table className="attendance-table">
-          <thead>
-            <tr>
-              <th>Emp</th>
-              <th>Check In</th>
-              <th>Check Out</th>
-              <th>Work Hours</th>
-              <th>Extra Hours</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>[Employee] Alex Morgan</td>
-              <td>10:00</td>
-              <td>19:00</td>
-              <td>09:00</td>
-              <td>01:00</td>
-            </tr>
-            <tr>
-              <td>[Employee] Sophia Chen</td>
-              <td>10:00</td>
-              <td>19:00</td>
-              <td>09:00</td>
-              <td>01:00</td>
-            </tr>
-          </tbody>
-        </table>
-      </>
-    ) : (
-      /* EMPLOYEE VIEW */
-      <>
-        <h3>Attendance (Employee View)</h3>
-        <div className="employee-stats-bar">
-          <div className="nav-arrows">
-            <button className="nav-arrow">{"<-"}</button>
-            <button className="nav-arrow">{"->"}</button>
-          </div>
-          <div className="stat-card">
-            <span className="stat-label">Month</span>
-            <span className="stat-value">Oct</span>
-          </div>
-          <div className="stat-card">
-            <span className="stat-label">Count of days present</span>
-            <span className="stat-value">22</span>
-          </div>
-          <div className="stat-card">
-            <span className="stat-label">Leaves count</span>
-            <span className="stat-value">2</span>
-          </div>
-          <div className="stat-card">
-            <span className="stat-label">Total working days</span>
-            <span className="stat-value">24</span>
-          </div>
-        </div>
+                  <table className="attendance-table">
+                    <thead>
+                      <tr>
+                        <th>Emp</th>
+                        <th>Check In</th>
+                        <th>Check Out</th>
+                        <th>Work Hours</th>
+                        <th>Extra Hours</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>[Employee] Alex Morgan</td>
+                        <td>10:00</td>
+                        <td>19:00</td>
+                        <td>09:00</td>
+                        <td>01:00</td>
+                      </tr>
+                      <tr>
+                        <td>[Employee] Sophia Chen</td>
+                        <td>10:00</td>
+                        <td>19:00</td>
+                        <td>09:00</td>
+                        <td>01:00</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </>
+              ) : (
+                <>
+                  <h3>Attendance (Employee View)</h3>
+                  <div className="employee-stats-bar">
+                    <div className="nav-arrows">
+                      <button className="nav-arrow">{"<-"}</button>
+                      <button className="nav-arrow">{"->"}</button>
+                    </div>
+                    <div className="stat-card">
+                      <span className="stat-label">Month</span>
+                      <span className="stat-value">Oct</span>
+                    </div>
+                    <div className="stat-card">
+                      <span className="stat-label">Count of days present</span>
+                      <span className="stat-value">22</span>
+                    </div>
+                    <div className="stat-card">
+                      <span className="stat-label">Leaves count</span>
+                      <span className="stat-value">2</span>
+                    </div>
+                    <div className="stat-card">
+                      <span className="stat-label">Total working days</span>
+                      <span className="stat-value">24</span>
+                    </div>
+                  </div>
 
-        <table className="attendance-table">
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Check In</th>
-              <th>Check Out</th>
-              <th>Work Hours</th>
-              <th>Extra Hours</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>21/10/2025</td>
-              <td>10:00</td>
-              <td>19:00</td>
-              <td>09:00</td>
-              <td>01:00</td>
-            </tr>
-            <tr>
-              <td>22/10/2025</td>
-              <td>10:05</td>
-              <td>19:00</td>
-              <td>08:55</td>
-              <td>00:00</td>
-            </tr>
-          </tbody>
-        </table>
-      </>
-    )}
-  </div>
-)}
+                  <table className="attendance-table">
+                    <thead>
+                      <tr>
+                        <th>Date</th>
+                        <th>Check In</th>
+                        <th>Check Out</th>
+                        <th>Work Hours</th>
+                        <th>Extra Hours</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>21/10/2025</td>
+                        <td>10:00</td>
+                        <td>19:00</td>
+                        <td>09:00</td>
+                        <td>01:00</td>
+                      </tr>
+                      <tr>
+                        <td>22/10/2025</td>
+                        <td>10:05</td>
+                        <td>19:00</td>
+                        <td>08:55</td>
+                        <td>00:00</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </>
+              )}
+            </div>
+          )}
 
           {activeTab === "Time Off" && (
-            <div className="tab-panel">
-              <h2>Time Off Management</h2>
-              <p>Apply for leaves or view leave history.</p>
+            <div className="timeoff-container">
+              {isAdmin ? (
+                <div className="timeoff-admin-view">
+                  <div className="timeoff-header">
+                    <button className="badge-new" onClick={() => setShowTimeOffModal(true)}>NEW</button>
+                    <input type="text" placeholder="Searchbar" className="search-input" />
+                  </div>
+
+                  <div className="balance-cards-summary">
+                    <div className="balance-box">
+                      <span className="balance-title">Paid Time Off</span>
+                      <span className="balance-count">24 Days Available</span>
+                    </div>
+                    <div className="balance-box">
+                      <span className="balance-title">Sick Time Off</span>
+                      <span className="balance-count">07 Days Available</span>
+                    </div>
+                  </div>
+
+                  <table className="timeoff-table">
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Time Off Type</th>
+                        <th>Status / Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {leaveRequests.map((req) => (
+                        <tr key={req.id}>
+                          <td>[Emp Name] {req.empName}</td>
+                          <td>{req.startDate}</td>
+                          <td>{req.endDate}</td>
+                          <td>{req.type}</td>
+                          <td>
+                            {req.status === "Pending" ? (
+                              <div className="action-btns">
+                                <button 
+                                  className="btn-approve" 
+                                  onClick={() => setLeaveRequests(leaveRequests.map(r => r.id === req.id ? {...r, status: "Approved"} : r))}
+                                >
+                                  ✓
+                                </button>
+                                <button 
+                                  className="btn-reject" 
+                                  onClick={() => setLeaveRequests(leaveRequests.map(r => r.id === req.id ? {...r, status: "Rejected"} : r))}
+                                >
+                                  ✕
+                                </button>
+                              </div>
+                            ) : (
+                              <span className={`status-badge ${req.status.toLowerCase()}`}>{req.status}</span>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <div className="timeoff-employee-view">
+                  <div className="timeoff-header">
+                    <button className="badge-new" onClick={() => setShowTimeOffModal(true)}>NEW</button>
+                  </div>
+
+                  <div className="balance-cards-summary">
+                    <div className="balance-box">
+                      <span className="balance-title">Paid Time Off</span>
+                      <span className="balance-count">24 Days Available</span>
+                    </div>
+                    <div className="balance-box">
+                      <span className="balance-title">Sick Time Off</span>
+                      <span className="balance-count">07 Days Available</span>
+                    </div>
+                  </div>
+
+                  <div className="calendar-placeholder-card">
+                    <h4>Your Leave Calendar & History</h4>
+                    <div className="mock-calendar-grid">
+                      <div className="calendar-month">October 2025 (24 Days Available)</div>
+                      <div className="calendar-month">November 2025 (07 Days Available)</div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {showTimeOffModal && (
+                <div className="modal-overlay">
+                  <div className="timeoff-modal">
+                    <div className="modal-header">
+                      <h3>Time off Type Request</h3>
+                      <button className="close-modal-btn" onClick={() => setShowTimeOffModal(false)}>✕</button>
+                    </div>
+                    <form onSubmit={(e) => {
+                      e.preventDefault();
+                      setShowTimeOffModal(false);
+                    }}>
+                      <div className="form-group">
+                        <label>Employee</label>
+                        <input type="text" value="[Employee Name]" disabled />
+                      </div>
+                      <div className="form-group">
+                        <label>Time off Type</label>
+                        <select defaultValue="Paid Time Off">
+                          <option value="Paid Time Off">Paid Time Off</option>
+                          <option value="Sick Leave">Sick Leave</option>
+                          <option value="Unpaid Leaves">Unpaid Leaves</option>
+                        </select>
+                      </div>
+                      <div className="form-group inline-dates">
+                        <label>Validity Period</label>
+                        <input type="date" defaultValue="2025-05-13" />
+                        <span>To</span>
+                        <input type="date" defaultValue="2025-05-14" />
+                      </div>
+                      <div className="form-group">
+                        <label>Allocation</label>
+                        <input type="text" defaultValue="01.00 Days" />
+                      </div>
+                      <div className="form-group">
+                        <label>Attachment</label>
+                        <input type="file" />
+                        <small>(For sick leave certificate)</small>
+                      </div>
+                      <div className="modal-actions">
+                        <button type="submit" className="btn-primary">Submit</button>
+                        <button type="button" className="btn-secondary" onClick={() => setShowTimeOffModal(false)}>Discard</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </>
