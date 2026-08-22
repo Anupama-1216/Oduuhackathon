@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import dayflowLogo from "./assets/dayflow-logo.png";
-<<<<<<< HEAD
+
 import EmployeeDashboard from "./EmployeeDashboard";
-=======
 import { testBackend } from "./api";
->>>>>>> b9e163fea9d5dd8adf7a66ae41d40c4bb77ca835
+
 
 const departments = [
   "Human Resources",
@@ -387,7 +386,7 @@ function App() {
       `Welcome ${hr.firstName}!`
     );
 
-    setScreen("hr-dashboard");
+    setScreen("add-employee");
   };
 
   // -----------------------------
@@ -843,7 +842,7 @@ function App() {
               <button
                 className="role-card"
                 onClick={() =>
-                  setScreen("add-employee")
+                  setScreen("hr-signin")
                 }
               >
 
