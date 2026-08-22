@@ -320,24 +320,51 @@ src/
 
 ### Frontend Setup
 ```bash
-git clone https://github.com/<your-username>/dayflow-hrms.git
-cd dayflow-hrms/frontend
+git clone https://github.com/manikantaise-design/Oduuhackathon.git
+cd Oduuhackathon/frontend
 npm install
 npm run dev
 ```
 
 ### Backend Setup
 ```bash
-cd dayflow-hrms/backend
-mvn clean install
-mvn spring-boot:run
+cd Oduuhackathon/backend
+npm install
+npm start
 ```
 
 ### Database Setup
-```sql
-CREATE DATABASE dayflow_db;
-```
-Configure your MySQL credentials in `backend/src/main/resources/application.properties`.
+
+<div style="background: #f6f8fa; border-left: 5px solid #2563eb; padding: 20px; border-radius: 10px; margin: 20px 0; font-family: Arial, sans-serif;">
+  <h3 style="margin-top: 0; color: #111827;">1. Create the database</h3>
+  <p>Create a MySQL database named:</p>
+  <p><strong>ODOO_NMIT_VIRTUAL</strong></p>
+
+  <h3 style="color: #111827;">2. Import the provided database backup</h3>
+  <p>From the folder containing the SQL backup file, run:</p>
+  <pre style="background: #111827; color: #f9fafb; padding: 12px; border-radius: 8px; overflow-x: auto;"><code>mysql -u root -p ODOO_NMIT_VIRTUAL &lt; ODOO_NMIT_VIRTUAL_backup.sql</code></pre>
+  <p>Enter your MySQL password when prompted.</p>
+
+  <h3 style="color: #111827;">3. Configure the backend .env</h3>
+  <p>Inside the <strong>backend</strong> folder, create a <strong>.env</strong> file:</p>
+  <pre style="background: #111827; color: #f9fafb; padding: 12px; border-radius: 8px; overflow-x: auto;"><code>DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=YOUR_MYSQL_PASSWORD
+DB_NAME=ODOO_NMIT_VIRTUAL
+DB_PORT=3306
+PORT=5000</code></pre>
+  <p>Replace <strong>YOUR_MYSQL_PASSWORD</strong> with your local MySQL password.</p>
+
+  <h3 style="color: #111827;">4. Start the backend</h3>
+  <pre style="background: #111827; color: #f9fafb; padding: 12px; border-radius: 8px; overflow-x: auto;"><code>npm install
+npm start</code></pre>
+  <p>The backend should run on:</p>
+  <p><strong>http://localhost:5000</strong></p>
+</div>
+
+> <strong>Important:</strong> The <strong>.env</strong> file is not included in GitHub for security reasons. Each evaluator/team member must create their own <strong>.env</strong> file using the configuration above.
+>
+> The SQL backup file is included so the database can be recreated locally.
 
 ---
 
