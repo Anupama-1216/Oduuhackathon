@@ -55,15 +55,10 @@ Sign Up → Sign In → Role Detection → Dashboard → Profile → Attendance 
 | React Router | Client-side routing |
 
 ### Backend
-| Technology | Purpose |
+| Technology |
 |---|---|
-| Java | Language |
-| Spring Boot | Application framework |
-| Spring Web | REST API layer |
-| Spring Security | Authentication & authorization |
-| Spring Data JPA | ORM / persistence |
-| JWT | Token-based authentication |
-| Maven | Build & dependency management |
+| Node.js | Express | bcrypt 
+
 
 ### Database
 - **MySQL** (only supported database)
@@ -86,7 +81,7 @@ Sign Up → Sign In → Role Detection → Dashboard → Profile → Attendance 
                MySQL
 ```
 
-Data flow: **React + TypeScript (frontend)** → **Spring Boot REST API (backend)** → **MySQL (database)**
+Data flow: **React + TypeScript (frontend)** → **Node.js and Express REST API (backend)** → **MySQL (database)**
 
 ---
 
@@ -117,6 +112,7 @@ Management and approval user with organization-wide access.
 ### 📊 Dashboards
 - **Employee Dashboard** — quick access to Profile, Attendance, Leave, Logout, recent activity, and alerts
 - **HR/Admin Dashboard** — employee list, attendance records, leave approvals, and employee switching
+- HR after verification can add employees as admin
 
 ### 🪪 Employee Profile
 - Personal details (ID, name, email, phone, address, photo)
