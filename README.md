@@ -155,82 +155,90 @@ Management and approval user with organization-wide access.
 ---
 
 ## 🗄 Database Schema
+odoo_nmit_virtual (DATABASE)
+├── companies
+├── departments
+├── users
+├── employees
+├── hr_profiles
+├── attendance
+├── leave_types
+├── leave_requests
+├── payroll
+└── audit_logs
 
 **users**
-| Column | Type |
-|---|---|
-| id | PK |
-| employee_id | |
-| email | |
-| password | |
-| role | |
-| email_verified | |
-| created_at | |
-| updated_at | |
+Column	Type	Foreign Key
+id	INT	—
+login_id	VARCHAR(100)	—
+password_hash	VARCHAR(255)	—
+role	ENUM('EMPLOYEE','HR','ADMIN')	—
+is_active	TINYINT(1)	—
+must_change_password	TINYINT(1)	—
+last_login	DATETIME	—
+created_at	TIMESTAMP	—
+updated_at	TIMESTAMP	—
+id is the Primary Key and login_id is UNIQUE.
 
-**employee_profiles**
-| Column | Type |
-|---|---|
-| id | PK |
-| user_id | FK → users.id |
-| full_name | |
-| phone | |
-| address | |
-| profile_picture | |
-| department | |
-| job_title | |
-| joining_date | |
-| employment_status | |
+**companies**
+Column	Type	Foreign Key
+id	INT	—
+company_name	VARCHAR(150)	—
+company_code	VARCHAR(50)	—
+email	VARCHAR(150)	—
+phone	VARCHAR(20)	—
+address	TEXT	—
+created_at	TIMESTAMP	—
+id is the Primary Key and company_code is UNIQUE.
 
-**attendance**
-| Column | Type |
-|---|---|
-| id | PK |
-| employee_id | FK → users.id |
-| attendance_date | |
-| check_in | |
-| check_out | |
-| status | |
-| working_hours | |
+**departments**
+Column	Type	Foreign Key
+id	INT	—
+department_name	VARCHAR(100)	—
+description	VARCHAR(255)	—
+is_active	TINYINT(1)	—
+created_at	TIMESTAMP	—
+id is the Primary Key and department_name is UNIQUE.
 
-**leave_requests**
-| Column | Type |
-|---|---|
-| id | PK |
-| employee_id | FK → users.id |
-| leave_type | |
-| start_date | |
-| end_date | |
-| remarks | |
-| status | |
-| hr_comment | |
-| created_at | |
-| updated_at | |
+**employees**
+Column	Type	 Foreign Key
+id	INT	—
+user_id	INT	users(id)
+company_id	INT	companies(id)
+department_id	INT	departments(id)
+first_name	VARCHAR(100)	—
+last_name	VARCHAR(100)	—
+date_of_birth	DATE	—
+year_of_joining	YEAR	—
+serial_number	VARCHAR(50)	—
+email	VARCHAR(150)	—
+phone	VARCHAR(20)	—
+job_title	VARCHAR(100)	—
+employment_status	ENUM('ACTIVE','INACTIVE','RESIGNED','TERMINATED')	—
+created_at	TIMESTAMP	—
+updated_at	TIMESTAMP	—
 
-**payroll**
-| Column | Type |
-|---|---|
-| id | PK |
-| employee_id | FK → users.id |
-| basic_salary | |
-| allowances | |
-| deductions | |
-| gross_salary | |
-| net_salary | |
-| updated_at | |
+***Foreign-key relationships are:***
+user_id → users.id
+company_id → companies.id
+department_id → departments.id
+id is the Primary Key and serial_number is UNIQUE.
 
-**notifications**
-| Column | Type |
-|---|---|
-| id | PK |
-| user_id | FK → users.id |
-| title | |
-| message | |
-| notification_type | |
-| is_read | |
-| created_at | |
+**hr_profiles**
+Column	Type	Foreign Key
+id	INT	—
+user_id	INT	users(id)
+company_id	INT	companies(id)
+first_name	VARCHAR(100)	—
+last_name	VARCHAR(100)	—
+email	VARCHAR(150)	—
+phone	VARCHAR(20)	—
+date_of_birth	DATE	—
+created_at	TIMESTAMP	—
+updated_at	TIMESTAMP	—
 
----
+
+
 
 ## 🔌 REST API Endpoints
 
@@ -310,9 +318,10 @@ src/
 
 ### Prerequisites
 - Node.js 18+
-- Java 17+
-- Maven 3.8+
+- React 
+- VITE
 - MySQL 8+
+- Express
 
 ### Frontend Setup
 ```bash
@@ -373,18 +382,17 @@ VITE_API_BASE_URL=http://localhost:8080/api
 
 **Backend (`application.properties`)**
 ```
-spring.datasource.url=jdbc:mysql://localhost:3306/dayflow_db
-spring.datasource.username=root
-spring.datasource.password=yourpassword
-jwt.secret=your-jwt-secret-key
-jwt.expiration=86400000
+DB_USER=root
+DB_PASSWORD=YOUR_MYSQL_PASSWORD
+DB_NAME=ODOO_NMIT_VIRTUAL
+DB_PORT=3306
+PORT=5000
 ```
 
 ---
 
 ## 🔒 Security
 
-- JWT-based authentication with Spring Security
 - Password hashing (BCrypt)
 - Strict role-based authorization enforced at the API level (not just the UI)
 - Protected frontend routes and protected backend endpoints
@@ -412,7 +420,7 @@ Tables remain scrollable/usable on mobile, cards stack vertically, and forms col
 
 ## 🗺 Roadmap
 
-- [ ] Full Spring Boot backend integration (currently uses realistic demo data)
+- [ ] backend integration (currently uses realistic demo data)
 - [ ] Email verification service integration
 - [ ] Document upload & management
 - [ ] Advanced analytics dashboard
