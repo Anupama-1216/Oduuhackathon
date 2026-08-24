@@ -74,7 +74,7 @@ Sign Up → Sign In → Role Detection → Dashboard → Profile → Attendance 
                  │
        ┌─────────┴─────────┐
        │                   │
- React + TypeScript    Spring Boot
+ React + TypeScript    Node.js + Express
        │                   │
        └─────────┬─────────┘
                  │
